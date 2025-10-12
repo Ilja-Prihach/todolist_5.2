@@ -4,6 +4,7 @@ import type { Todolist } from "./todolistsApi.types"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { AUTH_TOKEN } from "@/common/constants"
 import { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts"
+import { BaseResponse } from "@/common/types"
 
 
 export const todolistsApi = createApi({
@@ -21,14 +22,34 @@ export const todolistsApi = createApi({
   endpoints: (builder) => ({
     getTodolists: builder.query<DomainTodolist[], void>({
       // query: () => ({url: "/todo-lists"}),  // для get запроса можно сокращенно писать
-      query: () =>  "/todo-lists" ,
-      transformResponse: (todolists: Todolist[]) : DomainTodolist[] =>
-        todolists.map(todolists => ({...todolists, filter: 'all', entityStatus: 'idle' }))
+      query: () => "/todo-lists",
+      transformResponse: (todolists: Todolist[]): DomainTodolist[] =>
+        todolists.map((todolists) => ({ ...todolists, filter: "all", entityStatus: "idle" })),
+    }),
+    addTodolist: builder.mutation<BaseResponse<{ item: Todolist }>, string>({
+      query: (title) => ({
+        url: "/todo-lists",
+        method: "POST",
+        body: { title },
+      }),
+    }),
+    removeTodolist: builder.mutation<BaseResponse, string>({
+      query: (id) => ({
+        url: `/todo-lists/${id}`,
+        method: "DELETE"
+      }),
+    }),
+    updateTodolistTitle: builder.mutation<BaseResponse, { id: string; title: string }>({
+      query: ({ id, title }) => ({
+        url: `/todo-lists/${id}`,
+        method: "PUT",
+        body: { title },
+      }),
     }),
   }),
 })
 
-export const {useGetTodolistsQuery} = todolistsApi
+export const {useGetTodolistsQuery, useAddTodolistMutation, useRemoveTodolistMutation, useUpdateTodolistTitleMutation,} = todolistsApi
 
 
 

@@ -1,15 +1,20 @@
 import { CreateItemForm } from "@/common/components/CreateItemForm/CreateItemForm"
-import { useAppDispatch } from "@/common/hooks"
-import { createTodolistTC } from "@/features/todolists/model/todolists-slice"
+//import { useAppDispatch } from "@/common/hooks"
+//import { createTodolistTC } from "@/features/todolists/model/todolists-slice"
 import { Todolists } from "@/features/todolists/ui/Todolists/Todolists"
 import Container from "@mui/material/Container"
 import Grid from "@mui/material/Grid"
+import { useAddTodolistMutation } from "@/features/todolists/api/todolistsApi.ts"
 
 export const Main = () => {
-  const dispatch = useAppDispatch()
-
+  // const dispatch = useAppDispatch()
+  //
+  // const createTodolist = (title: string) => {
+  //   dispatch(createTodolistTC(title))
+  // }
+  const [addTodolist] = useAddTodolistMutation();
   const createTodolist = (title: string) => {
-    dispatch(createTodolistTC(title))
+    addTodolist(title)
   }
 
   return (
