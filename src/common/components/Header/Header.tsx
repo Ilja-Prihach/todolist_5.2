@@ -1,9 +1,15 @@
-import { changeThemeModeAC, selectAppStatus, selectThemeMode } from "@/app/app-slice.ts"
+import {
+  changeThemeModeAC,
+  selectAppStatus,
+  selectIsLoggedIn,
+  selectThemeMode,
+  setIsLoggedIn
+} from "@/app/app-slice.ts"
 import { useAppDispatch, useAppSelector } from "@/common/hooks"
 import { containerSx } from "@/common/styles"
 import { getTheme } from "@/common/theme"
 import { NavButton } from "@/common/components/NavButton/NavButton"
-import { logoutTC, selectIsLoggedIn } from "@/features/auth/model/auth-slice"
+//import { logoutTC, selectIsLoggedIn, setIsLoggedIn } from "@/features/auth/model/auth-slice"
 import MenuIcon from "@mui/icons-material/Menu"
 import AppBar from "@mui/material/AppBar"
 import Container from "@mui/material/Container"
@@ -11,11 +17,16 @@ import IconButton from "@mui/material/IconButton"
 import Switch from "@mui/material/Switch"
 import Toolbar from "@mui/material/Toolbar"
 import LinearProgress from "@mui/material/LinearProgress"
+import { useLogoutMutation } from "@/features/auth/api/authApi.ts"
+import { ResultCode } from "@/common/enums"
+import { AUTH_TOKEN } from "@/common/constants"
 
 export const Header = () => {
   const isLoggedIn = useAppSelector(selectIsLoggedIn)
   const themeMode = useAppSelector(selectThemeMode)
   const status = useAppSelector(selectAppStatus)
+
+  const [logoutMutation] = useLogoutMutation()
 
   const dispatch = useAppDispatch()
 
@@ -26,7 +37,13 @@ export const Header = () => {
   }
 
   const logout = () => {
-    dispatch(logoutTC())
+    //dispatch(logoutTC())
+    logoutMutation().unwrap().then((res) => {
+      if (res.resultCode === ResultCode.Success) {
+        localStorage.removeItem(AUTH_TOKEN)
+        dispatch(setIsLoggedIn({isLoggedIn: false}))
+      }
+    })
   }
 
   return (
@@ -47,3 +64,6 @@ export const Header = () => {
     </AppBar>
   )
 }
+
+
+

@@ -14,6 +14,7 @@ export const Main = () => {
   // }
   const [addTodolist] = useAddTodolistMutation();
   const createTodolist = (title: string) => {
+    //dispatch(createTodolistTC(title))
     addTodolist(title)
   }
 
