@@ -3,7 +3,7 @@ import type { BaseResponse } from "@/common/types"
 import type { DomainTask, GetTasksResponse, UpdateTaskModel } from "./tasksApi.types"
 import { baseApi } from "@/app/baseApi.ts"
 
-export const taskApi = baseApi.injectEndpoints({
+export const tasksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getTasks: builder.query<GetTasksResponse, string>({
       query: (todolistId) => ({
@@ -39,13 +39,14 @@ export const taskApi = baseApi.injectEndpoints({
       query: ({ todolistId, taskId }) => ({
         url: `/todo-lists/${todolistId}/tasks/${taskId}`,
         method: "DELETE"
-      })
+      }),
+      invalidatesTags: ["Task"]
     })
   }),
 })
 
 
-export const {useGetTasksQuery, useCreateTaskMutation, useUpdateTaskMutation, useDeleteTaskMutation} = taskApi
+export const {useGetTasksQuery, useCreateTaskMutation, useUpdateTaskMutation, useDeleteTaskMutation} = tasksApi
 
 
 

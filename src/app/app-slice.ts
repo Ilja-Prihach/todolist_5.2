@@ -16,9 +16,6 @@ export const appSlice = createSlice({
     selectIsLoggedIn: (state) => state.isLoggedIn,
   },
   reducers: (create) => ({
-    setIsLoggedIn: create.reducer<{isLoggedIn: boolean}>((state, action) => {
-      state.isLoggedIn = action.payload.isLoggedIn
-    }),
     changeThemeModeAC: create.reducer<{ themeMode: ThemeMode }>((state, action) => {
       state.themeMode = action.payload.themeMode
     }),
@@ -27,6 +24,9 @@ export const appSlice = createSlice({
     }),
     setAppErrorAC: create.reducer<{ error: string | null }>((state, action) => {
       state.error = action.payload.error
+    }),
+    setIsLoggedIn: create.reducer<{ isLoggedIn: boolean }>((state, action) => {
+      state.isLoggedIn = action.payload.isLoggedIn
     }),
   }),
 })

@@ -1,24 +1,21 @@
 import "./App.css"
 import { selectThemeMode, setIsLoggedIn } from "@/app/app-slice"
 import { ErrorSnackbar, Header } from "@/common/components"
+import { ResultCode } from "@/common/enums"
 import { useAppDispatch, useAppSelector } from "@/common/hooks"
 import { Routing } from "@/common/routing"
 import { getTheme } from "@/common/theme"
-//import { initializeAppTC, setIsLoggedIn } from "@/features/auth/model/auth-slice"
+import { useMeQuery } from "@/features/auth/api/authApi.ts"
 import CircularProgress from "@mui/material/CircularProgress"
 import CssBaseline from "@mui/material/CssBaseline"
 import { ThemeProvider } from "@mui/material/styles"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import styles from "./App.module.css"
-import { useMeQuery } from "@/features/auth/api/authApi.ts"
-import { ResultCode } from "@/common/enums"
 
 export const App = () => {
-  const [isInitialized, setIsInitialized] = useState(false)
   const themeMode = useAppSelector(selectThemeMode)
 
-  const {data, isLoading} = useMeQuery()
-
+  const { data, isLoading } = useMeQuery()
 
   const dispatch = useAppDispatch()
 
@@ -27,18 +24,11 @@ export const App = () => {
   useEffect(() => {
     if (isLoading) return
     if (data?.resultCode === ResultCode.Success) {
-      dispatch(setIsLoggedIn({isLoggedIn: true}))
+      dispatch(setIsLoggedIn({ isLoggedIn: true }))
     }
-    setIsInitialized(true)
-  }, [isInitialized])
+  }, [isLoading])
 
-  // useEffect(() => {
-  //   dispatch(initializeAppTC()).finally(() => {
-  //     setIsInitialized(true)
-  //   })
-  // }, [])
-
-  if (isInitialized) {
+  if (isLoading) {
     return (
       <div className={styles.circularProgressContainer}>
         <CircularProgress size={150} thickness={3} />

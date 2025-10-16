@@ -3,23 +3,24 @@ import {
   selectAppStatus,
   selectIsLoggedIn,
   selectThemeMode,
-  setIsLoggedIn
+  setIsLoggedIn,
 } from "@/app/app-slice.ts"
+import { NavButton } from "@/common/components/NavButton/NavButton"
+import { AUTH_TOKEN } from "@/common/constants"
+import { ResultCode } from "@/common/enums"
 import { useAppDispatch, useAppSelector } from "@/common/hooks"
+import { Path } from "@/common/routing"
 import { containerSx } from "@/common/styles"
 import { getTheme } from "@/common/theme"
-import { NavButton } from "@/common/components/NavButton/NavButton"
-//import { logoutTC, selectIsLoggedIn, setIsLoggedIn } from "@/features/auth/model/auth-slice"
+import { useLogoutMutation } from "@/features/auth/api/authApi.ts"
 import MenuIcon from "@mui/icons-material/Menu"
 import AppBar from "@mui/material/AppBar"
 import Container from "@mui/material/Container"
 import IconButton from "@mui/material/IconButton"
+import LinearProgress from "@mui/material/LinearProgress"
 import Switch from "@mui/material/Switch"
 import Toolbar from "@mui/material/Toolbar"
-import LinearProgress from "@mui/material/LinearProgress"
-import { useLogoutMutation } from "@/features/auth/api/authApi.ts"
-import { ResultCode } from "@/common/enums"
-import { AUTH_TOKEN } from "@/common/constants"
+import { NavLink } from "react-router"
 
 export const Header = () => {
   const isLoggedIn = useAppSelector(selectIsLoggedIn)
@@ -37,13 +38,14 @@ export const Header = () => {
   }
 
   const logout = () => {
-    //dispatch(logoutTC())
-    logoutMutation().unwrap().then((res) => {
-      if (res.resultCode === ResultCode.Success) {
-        localStorage.removeItem(AUTH_TOKEN)
-        dispatch(setIsLoggedIn({isLoggedIn: false}))
-      }
-    })
+    logoutMutation()
+      .unwrap()
+      .then((res) => {
+        if (res.resultCode === ResultCode.Success) {
+          localStorage.removeItem(AUTH_TOKEN)
+          dispatch(setIsLoggedIn({ isLoggedIn: false }))
+        }
+      })
   }
 
   return (
@@ -55,6 +57,12 @@ export const Header = () => {
           </IconButton>
           <div>
             {isLoggedIn && <NavButton onClick={logout}>Sign out</NavButton>}
+            <NavLink style={{ color: "white", marginRight: "20px" }} to={Path.Main}>
+              Main
+            </NavLink>
+            <NavLink style={{ color: "white", marginRight: "20px" }} to={Path.Faq}>
+              Faq
+            </NavLink>
             <NavButton background={theme.palette.primary.dark}>Faq</NavButton>
             <Switch color={"default"} onChange={changeMode} />
           </div>
@@ -64,6 +72,3 @@ export const Header = () => {
     </AppBar>
   )
 }
-
-
-
